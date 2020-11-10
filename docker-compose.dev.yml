@@ -6,6 +6,8 @@ services:
     container_name: questionForm_db
     env_file:
       - .env
+    ports:
+      - '5432:5432'
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -14,30 +16,20 @@ services:
     restart: unless-stopped
     build: frontend/
     ports:
-      - 3000:3000
-    env_file: .env
-    volumes:
-      - frontend-build-folder:/frontend/build
+      - 80
     depends_on:
       - backend
+    command: 'yarn serve'
 
   backend:
     container_name: questionForm_backend
     restart: unless-stopped
     build: backend/
     env_file: .env
-    expose:
-      - $BACKEND_PORT
     ports:
-      - 4000:4000
+      - $BACKEND_PORT
     depends_on:
       - db
+
 volumes:
   db_data:
-  frontend-build-folder:
-
-networks:
-  internal:
-    external: false
-  web:
-    external: true
