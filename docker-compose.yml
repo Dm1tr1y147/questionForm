@@ -4,22 +4,22 @@ services:
   db:
     image: 'postgres'
     container_name: questionForm_db
+    expose:
+      - 5432
     env_file:
       - .env
+    networks:
+      - internal
+
     volumes:
       - db_data:/var/lib/postgresql/data
 
   frontend:
     container_name: questionForm_frontend
-    restart: unless-stopped
     build: frontend/
-    ports:
-      - 3000:3000
     env_file: .env
     volumes:
       - frontend-build-folder:/frontend/build
-    depends_on:
-      - backend
 
   backend:
     container_name: questionForm_backend
@@ -30,8 +30,12 @@ services:
       - $BACKEND_PORT
     ports:
       - 4000:4000
+    networks:
+      - internal
+      - web
     depends_on:
       - db
+
 volumes:
   db_data:
   frontend-build-folder:
