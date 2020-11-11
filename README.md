@@ -35,10 +35,10 @@ If you are a regular user, you can visit [QuestionForm.dmitriy.icu](https://ques
 git clone https://github.com/Dm1tr1y147/questionForm.git
 ```
 
-2. For now you can run it without https with a command below, but if you want to run it with https, skip this to 3 step:
+2. Copy and fill in .env file:
 
 ```bash
-docker-compose -f docker-compose -f docker-compose.dev.yml up -d
+cp .env.example .env && vim .env
 ```
 
 3. Build the container:
@@ -53,4 +53,19 @@ docker-compose build
 docker-compose up -d
 ```
 
-To check logs you can use docker-compose logs
+5. Connect to backend container and push migrations with prisma migrate:
+
+```bash
+docker-compose exec backend sh
+// inside container
+yarn prisma migrate up --experimental
+exit
+```
+
+6. If you don't have separate nginx container to host the site, you can use docker-compose file in `nginx` directory of this repository or change volumes paths to expose built frontend outside the container and specify `ports` property in `backend` service to expose backend application into host. The first method is recommended as for it is more flexible and secure.
+
+```bash
+cd nginx
+vim conf/main.conf
+docker-compose up -d
+```

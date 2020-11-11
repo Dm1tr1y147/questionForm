@@ -1,0 +1,21 @@
+version: '3'
+networks:
+  web:
+    external: true
+
+services:
+  nginx:
+    restart: unless-stopped
+    image: nginx:1.15-alpine
+    networks:
+      - web
+    volumes:
+      - questionForm_frontend-build-folder:/var/www/questionform/frontend
+      - ./conf:/etc/nginx/conf.d
+    ports:
+      - 80:80
+
+volumes:
+  questionForm_frontend-build-folder:
+    external:
+      name: questionform_frontend-build-folder
